@@ -8,7 +8,30 @@ datasource db {
 }
 
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
+  id           Int     @id @default(autoincrement())
+  name         String
+  email        String  @unique
+  password     String
+  walletId     Int?    @unique
+  Wallet       Wallet? @relation(fields: [walletId], references: [id])
+  refreshToken String?
+}
+
+model Wallet {
+  id           Int     @id @default(autoincrement())
+  user         User?
+  userId       Int?
+  quotes       Quote[]
+  quotesAmount Float
+}
+
+model Quote {
+  id        Int     @id @default(autoincrement())
+  ticker    String  @unique
+  price     Float
+  shortName String
+  longName  String
+  logoUrl   String
+  wallet    Wallet? @relation(fields: [walletId], references: [id])
+  walletId  Int?
 }

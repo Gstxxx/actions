@@ -1,14 +1,20 @@
-import { serve } from '@hono/node-server'
-import { Hono } from 'hono'
-import { prisma } from './prisma.js'
+import { Hono } from "hono";
+import { cors } from 'hono/cors'
+import { serve } from "@hono/node-server";
+import { authApp } from "./Routes/Auth";
 
-const app = new Hono()
+const mainApp = new Hono();
+
+mainApp.use('/*', cors())
+const routes = mainApp
+  .route("/", authApp)
 
 
-const port = 3000
-console.log(`Server is running on http://localhost:${port}`)
+export type AppType = typeof routes;
+const port = 3005;
+console.log(`Server is running on port ${port}`);
 
 serve({
-  fetch: app.fetch,
-  port
-})
+  fetch: mainApp.fetch,
+  port,
+});

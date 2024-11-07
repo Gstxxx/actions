@@ -3,22 +3,28 @@
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/index.ts",
+    "build": "tsc && prisma generate && prisma migrate dev --name init",
     "migrate": "npx prisma migrate dev --name init",
     "studio": "npx prisma studio",
     "generate": "npx prisma generate",
-    "seed": "npx -y tsx src/lib/seed.ts"
+    "seed": "npx -y tsx src/Utils/seed.ts"
   },
   "dependencies": {
-    "@hono/node-server": "^1.13.5",
-    "@hono/zod-validator": "^0.4.1",
-    "@prisma/client": "^5.22.0",
-    "@prisma/extension-pulse": "^1.2.0",
-    "dotenv": "^16.4.5",
-    "hono": "^4.6.9",
-    "zod": "^3.23.8"
+    "@hono/node-server": "1.13.5",
+    "@hono/zod-validator": "0.4.1",
+    "@prisma/client": "5.22.0",
+    "@prisma/extension-pulse": "1.2.0",
+    "cookie": "^1.0.1",
+    "dotenv": "16.4.5",
+    "hono": "4.6.9",
+    "jsonwebtoken": "9.0.2",
+    "zod": "3.23.8"
   },
   "devDependencies": {
-    "@types/node": "^20.11.17",
-    "tsx": "^4.7.1"
+    "@types/bcrypt": "5.0.2",
+    "@types/jsonwebtoken": "9.0.7",
+    "@types/node": "20.11.17",
+    "bcrypt": "5.1.1",
+    "tsx": "4.7.1"
   }
 }
