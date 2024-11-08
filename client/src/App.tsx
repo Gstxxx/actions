@@ -6,6 +6,7 @@ import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 import LoginForm from './pages/Auth/LoginForm';
 import RegisterForm from './pages/Auth/RegisterForm';
 import axios from "axios";
+import QuotesPages from './pages/Dashboard/QuotesPages/Base.tsx';
 
 axios.defaults.baseURL = "http://localhost:8000";
 axios.defaults.withCredentials = true;
@@ -57,8 +58,13 @@ const router = createBrowserRouter([
             {
                 path: "/register",
                 element: <RegisterForm />,
+            },
+            {
+                path: "/dashboard/quotes",
+                element: <QuotesPages />,
             }
         ],
+        
     },
 ]);
 

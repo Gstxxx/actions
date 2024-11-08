@@ -7,6 +7,19 @@ export interface Quote {
     shortName: string;
     longName: string;
     logoUrl: string;
-    walletId: number | null;
+    currency: string;
+    regularMarketChange?: number | null;
+    regularMarketChangePercent?: number | null;
+    regularMarketTime?: Date;
+    regularMarketDayHigh?: number;
+    regularMarketDayLow?: number;
+    regularMarketVolume?: number;
+    regularMarketPreviousClose?: number;
+    regularMarketOpen?: number;
+    fiftyTwoWeekLow?: number;
+    fiftyTwoWeekHigh?: number;
+    priceEarnings?: number;
+    earningsPerShare?: number | null;
     wallet?: Wallet;
+    walletId?: number | null;
 }

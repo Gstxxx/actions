@@ -24,8 +24,8 @@ const loginApp = new Hono()
                 return c.json({ message: "Invalid email or password" }, 401);
             }
 
-            const accessToken = generateAccessToken(user.id);
-            const tokenRefresh = generateRefreshToken(user.id);
+            const accessToken = await generateAccessToken(user.id);
+            const tokenRefresh = await generateRefreshToken(user.id);
 
             await prisma.refreshToken.create({
                 data: {
@@ -33,15 +33,6 @@ const loginApp = new Hono()
                   user_id: user.id,
                 },
               });
-        
-            const cookie = serialize("refresh_token", tokenRefresh, {
-                httpOnly: true,
-                secure: process.env.NODE_ENV === "production",
-                maxAge: 7 * 24 * 60 * 60,
-                path: "/",
-            });
-
-            c.header("Set-Cookie", cookie);
             
       const { password: _, ...userWithoutPassword } = user;
 

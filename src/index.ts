@@ -2,12 +2,14 @@ import { Hono } from "hono";
 import { cors } from 'hono/cors'
 import { serve } from "@hono/node-server";
 import { authApp } from "./Routes/Auth";
+import { quotesApp } from "./Routes/Quotes";
 
 const mainApp = new Hono();
 
 mainApp.use('/*', cors())
 const routes = mainApp
   .route("/", authApp)
+  .route("/",quotesApp);
 
 
 export type AppType = typeof routes;

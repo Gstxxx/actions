@@ -38,12 +38,25 @@ model Wallet {
 }
 
 model Quote {
-  id        Int     @id @default(autoincrement())
-  ticker    String  @unique
-  price     Float
-  shortName String
-  longName  String
-  logoUrl   String
-  wallet    Wallet? @relation(fields: [walletId], references: [id])
-  walletId  Int?
+  id                           Int      @id @default(autoincrement())
+  ticker                       String   @unique
+  price                       Float
+  shortName                   String
+  longName                    String
+  logoUrl                     String
+  currency                    String   @default("BRL")
+  regularMarketChange         Float?
+  regularMarketChangePercent  Float?
+  regularMarketTime           DateTime?
+  regularMarketDayHigh        Float?
+  regularMarketDayLow         Float?
+  regularMarketVolume         Int?
+  regularMarketPreviousClose  Float?
+  regularMarketOpen           Float?
+  fiftyTwoWeekLow            Float?
+  fiftyTwoWeekHigh           Float?
+  priceEarnings              Float?
+  earningsPerShare           Float?
+  wallet                      Wallet?  @relation(fields: [walletId], references: [id])
+  walletId                    Int?
 }
