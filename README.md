@@ -43,17 +43,17 @@ npm run dev
 ```
 open http://localhost:3000
 ```
-#Landing Page   
+## Landing Page   
 ![Screenshot 1](preview/landing.png)
 
-#Login Page
+## Login Page
 ![Screenshot 2](preview/login.png)
 
-#Stocks Page
+## Stocks Page
 ![Screenshot 3](preview/stocks.png)
 
-#Create Quote Page
+## Create Quote Page
 ![Screenshot 4](preview/create.png)
 
-#Quote Details Page
+## Quote Details Page
 ![Screenshot 5](preview/details.png)
