@@ -9,5 +9,6 @@ export const quoteSchema = z.object({
 })
 
 export const requestQuoteSchema = z.object({
-    ticker: z.string()
+    ticker: z.string(),
+    amount: z.number()
 })

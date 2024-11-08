@@ -12,24 +12,39 @@ const registerApp = new Hono()
 
             const hashedPassword = await bcrypt.hash(password, 10);
 
-            await prisma.user.create({
+            const wallet = await prisma.wallet.create({
+                data: {}
+            });
+
+            const user = await prisma.user.create({
                 data: {
                     name,
                     email,
                     password: hashedPassword,
-                    Wallet: {
-                        create: {
-                            quotesAmount: 0
-                        }
-                    }
+                    walletId: wallet.id,
+                    last_login: new Date(),
+                    create_date: new Date(),
+                    modify_date: new Date()
+                },
+                include: {
+                    Wallet: true
                 }
             });
 
-            return c.json({ message: "User and Wallet Created" }, 200);
+            await prisma.wallet.update({
+                where: { id: wallet.id },
+                data: { userId: user.id }
+            });
+
+            const { password: _, ...userWithoutPassword } = user;
+            return c.json({ message: "User and Wallet Created", user: userWithoutPassword }, 200);
         }
         catch (error) {
-            console.error(error);
-            return c.json({ message: "Error while creating user and wallet" ,error}, 500);
+            console.error("Error Details:", error);
+            if (error.code === 'P2002') {
+                return c.json({ message: "Email already exists" }, 400);
+            }
+            return c.json({ message: "Error while creating user and wallet", error }, 500);
         }
     });
 

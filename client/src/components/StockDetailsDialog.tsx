@@ -23,7 +23,7 @@ export function StockDetailsDialog({
   onOpenChange,
   onDelete,
 }: StockDetailsDialogProps) {
-  const totalInvestment = (quote.price * (quote.wallet?.quotesAmount || 0));
+  const totalInvestment = (quote.price * (quote.amount || 0));
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -55,11 +55,11 @@ export function StockDetailsDialog({
                 {quote.regularMarketChange?.toFixed(2)} ({quote.regularMarketChangePercent?.toFixed(2)}%)
               </p>
             </div>
-            {quote.wallet?.quotesAmount && (
+            {quote.amount && (
               <div className="text-right">
                 <p className="text-sm text-muted-foreground">Total Investment</p>
                 <p className="text-2xl font-bold">{formatCurrency(totalInvestment, quote.currency)}</p>
-                <p className="text-sm text-muted-foreground">{quote.wallet?.quotesAmount} shares</p>
+                <p className="text-sm text-muted-foreground">{quote.amount} shares</p>
               </div>
             )}
           </div>

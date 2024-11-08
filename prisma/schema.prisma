@@ -35,11 +35,11 @@ model Wallet {
   user         User?
   userId       Int?
   quotes       Quote[]
-  quotesAmount Float
 }
 
 model Quote {
   id                           Int      @id @default(autoincrement())
+  quoteAmount                  Int
   ticker                       String   @unique
   price                       Float
   shortName                   String

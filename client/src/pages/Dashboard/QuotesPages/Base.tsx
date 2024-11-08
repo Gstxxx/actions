@@ -12,7 +12,6 @@ import { AddQuoteDialog } from "@/components/AddQuoteDialog";
 
 export default function QuotesPages() {
   const [quotes, setQuotes] = useState<Quote[]>([]);
-  const [newQuote, setNewQuote] = useState('');
   const [loading, setLoading] = useState(true);
   const [selectedQuote, setSelectedQuote] = useState<Quote | null>(null);
 
@@ -36,6 +35,7 @@ export default function QuotesPages() {
               priceEarnings: quote.priceEarnings ?? undefined,
               earningsPerShare: quote.earningsPerShare ?? undefined,
               walletId: quote.walletId ?? undefined,
+              amount: quote.quoteAmount,
             }));
             setQuotes(transformedQuotes);
             setLoading(false);
@@ -57,13 +57,13 @@ export default function QuotesPages() {
     return () => clearInterval(interval);
   }, []);
 
-  const handleAddQuote = async (ticker: string) => {
+  const handleAddQuote = async (ticker: string, amount: number) => {
     if (!ticker) {
       toast.error('Quote cannot be empty');
       return;
     }
     try {
-      const response = await createQuote({ ticker });
+      const response = await createQuote({ ticker, amount });
       if (response.ok) {
         const { quote: addedQuote } = await response.json();
         const transformedQuote = {
@@ -78,6 +78,7 @@ export default function QuotesPages() {
           fiftyTwoWeekHigh: addedQuote.fiftyTwoWeekHigh ?? undefined,
           priceEarnings: addedQuote.priceEarnings ?? undefined,
           earningsPerShare: addedQuote.earningsPerShare ?? undefined,
+          amount: addedQuote.quoteAmount ?? amount,
         };
         setQuotes([...quotes, transformedQuote]);
         toast.success('Quote added successfully');
@@ -88,6 +89,7 @@ export default function QuotesPages() {
       toast.error('An error occurred while adding the quote');
     }
   };
+
   const handleDeleteQuote = (id: number) => {
     setQuotes(prev => prev.filter(quote => quote.id !== id));
     setSelectedQuote(null);
@@ -95,11 +97,10 @@ export default function QuotesPages() {
   };
 
   const totalPortfolioValue = quotes.reduce((total, quote) => {
-    return total + (quote.price * (quote.wallet?.quotesAmount || 0));
+    return total + (quote.price * quote.amount);
   }, 0);
 
   return (
-    
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <div className="min-h-screen bg-background">
         <div className="max-w-7xl mx-auto p-8 space-y-8">
@@ -121,6 +122,10 @@ export default function QuotesPages() {
           {loading ? (
             <div className="flex items-center justify-center h-64">
               <Loader2Icon className="h-8 w-8 animate-spin" />
+            </div>
+          ) : quotes.length === 0 ? (
+            <div className="flex items-center justify-center h-64">
+              <p className="text-xl text-gray-400">Add a quote</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

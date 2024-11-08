@@ -2,6 +2,7 @@ import { Wallet } from './Wallet';
 
 export interface Quote {
     id: number;
+    amount: number;
     ticker: string;
     price: number;
     shortName: string;

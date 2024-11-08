@@ -9,7 +9,7 @@ const controller = new Hono()
     .use(userMiddleware)
     .post("/create", zValidator("json", requestQuoteSchema), async (c) => {
         try {
-            const { ticker } = c.req.valid("json");
+            const { ticker,amount } = c.req.valid("json");
 
             const token = process.env.BR_API_TOKEN;
             const apiUrl = process.env.API_URL;
@@ -48,6 +48,7 @@ const controller = new Hono()
 
             quote = await prisma.quote.create({
                 data: {
+                    quoteAmount: amount,
                     ticker: quoteData.symbol,
                     price: quoteData.regularMarketPrice,
                     shortName: quoteData.shortName,
@@ -70,16 +71,6 @@ const controller = new Hono()
                 }
             });
 
-            await prisma.wallet.update({
-                where: {
-                    id: user.Wallet.id
-                },
-                data: {
-                    quotesAmount: {
-                        increment: 1
-                    }
-                }
-            });
             await prisma.user.update({
                 where: {
                     id: user.id

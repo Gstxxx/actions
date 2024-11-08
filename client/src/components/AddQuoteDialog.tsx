@@ -5,18 +5,20 @@ import { Input } from "@/components/ui/input";
 import { PlusCircleIcon } from "lucide-react";
 
 interface AddQuoteDialogProps {
-  onAdd: (ticker: string) => Promise<void>;
+  onAdd: (ticker: string, amount: number) => Promise<void>;
 }
 
 export function AddQuoteDialog({ onAdd }: AddQuoteDialogProps) {
   const [open, setOpen] = useState(false);
   const [ticker, setTicker] = useState("");
+  const [amount, setAmount] = useState(1);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (ticker.trim()) {
-      await onAdd(ticker.trim());
+    if (ticker.trim() && amount >= 1) {
+      await onAdd(ticker.trim(), amount);
       setTicker("");
+      setAmount(1);
       setOpen(false);
     }
   };
@@ -38,6 +40,13 @@ export function AddQuoteDialog({ onAdd }: AddQuoteDialogProps) {
             placeholder="Enter stock symbol (e.g., PETR4)"
             value={ticker}
             onChange={(e) => setTicker(e.target.value)}
+          />
+          <Input
+            type="number"
+            min={1}
+            placeholder="Enter amount of shares"
+            value={amount}
+            onChange={(e) => setAmount(Math.max(1, parseInt(e.target.value) || 1))}
           />
           <Button type="submit" className="w-full">Add Stock</Button>
         </form>

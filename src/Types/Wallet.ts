@@ -6,5 +6,4 @@ export interface Wallet {
     userId: number;
     user: User;
     quotes: Quote[];
-    quotesAmount: number;
 }
