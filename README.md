@@ -1,5 +1,7 @@
 # Actions
 
+## THIS PROJECT STILL A WORK IN PROGRESS
+
 ## Overview
 Actions is a comprehensive stock portfolio management application that helps users track and manage their stock investments. The platform provides real-time monitoring of stock prices, portfolio valuation, and detailed analytics for each holding. Users can easily add stocks to their watchlist, view key metrics like P/E ratios and earnings per share, and track their total portfolio value over time. With an intuitive interface and robust features, Actions aims to give investors a clear view of their stock holdings and market performance in one centralized dashboard.
 
