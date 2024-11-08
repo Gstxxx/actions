@@ -53,82 +53,89 @@ export default function RegisterForm() {
         <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-white/90 backdrop-blur-lg w-full max-w-md rounded-2xl shadow-xl p-8"
+            className="relative w-full max-w-md flex justify-center items-center transition duration-500 z-10 hover:scale-105"
         >
-            <div className="text-center mb-8">
-                <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                    Create Account
-                </h1>
-                <p className="text-gray-600 mt-2">Fill in the form to create your account</p>
+            <div className="absolute top-0 w-full h-full bg-gradient-to-br from-gray-100 to-pink-400 to-purple-400 rounded-2xl transform transition duration-500 blur-lg hover:blur-none"></div>
+            <span className="absolute top-0 left-0 right-0 bottom-0 z-5 pointer-events-none">
+                <span className="absolute top-[-10px] left-10 w-12 h-12 bg-white/10 backdrop-blur-md opacity-0 transition duration-100 animate-pulse shadow-md"></span>
+                <span className="absolute bottom-[-10px] right-10 w-12 h-12 bg-white/10 backdrop-blur-md opacity-0 transition duration-500 shadow-md animate-pulse"></span>
+            </span>
+            <div className="relative w-full max-w-md rounded-2xl shadow-xl p-8 z-10 bg-white/5 backdrop-blur-md">
+                <div className="text-center mb-8">
+                    <h1 className="text-3xl font-bold bg-gradient-to-r from-pink-500 to-yellow-500 bg-clip-text text-transparent">
+                        Create Account
+                    </h1>
+                    <p className="text-gray-600 mt-2">Fill in the form to create your account</p>
+                </div>
+
+                <form onSubmit={handleSubmit} className="space-y-6">
+                    <AnimatePresence mode="wait">
+                        <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                        >
+                            <Input
+                                type="text"
+                                name="name"
+                                value={formData.name}
+                                onChange={handleInputChange}
+                                icon={User}
+                                label="Full Name"
+                                error={errors.name}
+                            />
+                        </motion.div>
+                    </AnimatePresence>
+
+                    <Input
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        icon={Mail}
+                        label="Email"
+                        error={errors.email}
+                    />
+
+                    <Input
+                        type={showPassword ? 'text' : 'password'}
+                        name="password"
+                        value={formData.password}
+                        onChange={handleInputChange}
+                        icon={Lock}
+                        label="Password"
+                        error={errors.password}
+                        endAdornment={<PasswordToggle />}
+                    />
+
+                    <AnimatePresence mode="wait">
+                        <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                        >
+                            <Input
+                                type={showPassword ? 'text' : 'password'}
+                                name="confirmPassword"
+                                value={formData.confirmPassword}
+                                onChange={handleInputChange}
+                                icon={Lock}
+                                label="Confirm Password"
+                                error={errors.confirmPassword}
+                                endAdornment={<PasswordToggle />}
+                            />
+                        </motion.div>
+                    </AnimatePresence>
+
+                    <motion.button
+                        whileHover={{ scale: 1.01 }}
+                        whileTap={{ scale: 0.99 }}
+                        className="w-full bg-gradient-to-r from-pink-500 to-yellow-500 text-white rounded-lg py-3 font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+                    >
+                        Sign Up
+                    </motion.button>
+                </form>
             </div>
-
-            <form onSubmit={handleSubmit} className="space-y-6">
-                <AnimatePresence mode="wait">
-                    <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0 }}
-                    >
-                        <Input
-                            type="text"
-                            name="name"
-                            value={formData.name}
-                            onChange={handleInputChange}
-                            icon={User}
-                            label="Full Name"
-                            error={errors.name}
-                        />
-                    </motion.div>
-                </AnimatePresence>
-
-                <Input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    icon={Mail}
-                    label="Email"
-                    error={errors.email}
-                />
-
-                <Input
-                    type={showPassword ? 'text' : 'password'}
-                    name="password"
-                    value={formData.password}
-                    onChange={handleInputChange}
-                    icon={Lock}
-                    label="Password"
-                    error={errors.password}
-                    endAdornment={<PasswordToggle />}
-                />
-
-                <AnimatePresence mode="wait">
-                    <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0 }}
-                    >
-                        <Input
-                            type={showPassword ? 'text' : 'password'}
-                            name="confirmPassword"
-                            value={formData.confirmPassword}
-                            onChange={handleInputChange}
-                            icon={Lock}
-                            label="Confirm Password"
-                            error={errors.confirmPassword}
-                            endAdornment={<PasswordToggle />}
-                        />
-                    </motion.div>
-                </AnimatePresence>
-
-                <motion.button
-                    whileHover={{ scale: 1.01 }}
-                    whileTap={{ scale: 0.99 }}
-                    className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg py-3 font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
-                >
-                    Sign Up
-                </motion.button>
-            </form>
         </motion.div>
     );
 }
