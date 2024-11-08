@@ -5,7 +5,10 @@ import { Footer } from './components/Footer.tsx';
 import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 import LoginForm from './pages/Auth/LoginForm';
 import RegisterForm from './pages/Auth/RegisterForm';
+import axios from "axios";
 
+axios.defaults.baseURL = "http://localhost:8000";
+axios.defaults.withCredentials = true;
 
 function BaseLayout() {
     return (

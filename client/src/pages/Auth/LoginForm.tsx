@@ -1,26 +1,78 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Eye, EyeOff, Lock, Mail } from 'lucide-react';
 import { loginSchema } from '@/lib/validation.ts';
 import Input from '@/components/Input';
+import { ActionFunctionArgs } from "react-router-dom";
+import { submit as submitLoginForm } from "@/lib/api/AuthService/Login";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+export async function action({ request }: ActionFunctionArgs) {
+    const formData = await request.formData();
+    const email = formData.get("email")?.toString();
+    const password = formData.get("password")?.toString();
+
+    if (!email || !password) {
+        return { error: "Email and password are required." };
+    }
+
+    const result = await submitLoginForm({ email, password });
+
+    if (result.ok) {
+        const response = await result.json();
+        if ('token' in response && 'tokenRefresh' in response) {
+            localStorage.setItem("token", response.token);
+            localStorage.setItem("refreshToken", response.refreshToken);
+            toast.success('Login successful');
+            return { success: true, redirectTo: "/dashboard/user" };
+        }
+    } else {
+        toast.error('Invalid email or password');
+        return { error: "Invalid email or password." };
+    }
+}
 
 export default function LoginForm() {
     const [showPassword, setShowPassword] = useState(false);
     const [errors, setErrors] = useState<Record<string, string>>({});
+
+    const navigate = useNavigate();
+    useEffect(() => {
+        const localToken = localStorage.getItem('token');
+
+        if (localToken) {
+            navigate("/dashboard/user");
+        }
+    }, [navigate]);
     const [formData, setFormData] = useState({
         email: '',
         password: '',
     });
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+
         setErrors({});
         try {
             loginSchema.parse({
                 email: formData.email,
                 password: formData.password,
             });
-            console.log('Form submitted:', formData);
+            const result = await submitLoginForm(formData);
+            if (result.ok) {
+                const response = await result.json();
+                if ('token' in response && 'tokenRefresh' in response) {
+                    localStorage.setItem("token", response.token);
+                    localStorage.setItem("refreshToken", response.refreshToken);
+                    toast.success('Login successful');
+                    navigate("/dashboard/user");
+                }
+            }
+            else {
+                toast.error('Invalid email or password');
+            }
         } catch (error: any) {
             const formErrors: Record<string, string> = {};
             error.errors.forEach((err: any) => {

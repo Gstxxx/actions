@@ -34,7 +34,7 @@ const loginApp = new Hono()
             });
 
             c.header("Set-Cookie", cookie);
-            return c.json({ message: "Login successful", token: accessToken }, 200);
+            return c.json({ message: "Login successful", token: accessToken, refreshToken }, 200);
         } catch (error) {
             console.error(error);
             return c.json({ message: "Error during login" }, 500);
