@@ -1,7 +1,7 @@
 import { InferRequestType } from "hono/client";
 import { getApiClient } from "../ApiService.";
 
-const action = getApiClient().auth.login.auth.login.$post;
+const action = getApiClient().auth.login.$post;
 
 type Request = InferRequestType<typeof action>["json"];
 export async function submit(data: Request) {

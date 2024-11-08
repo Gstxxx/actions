@@ -9,12 +9,24 @@ datasource db {
 
 model User {
   id           Int     @id @default(autoincrement())
+  type                   String         @default("Customer")
   name         String
   email        String  @unique
   password     String
   walletId     Int?    @unique
+  deleted_at   DateTime?
+  last_login   DateTime?
+  last_ip      String?
+  create_date            DateTime       @default(now())
+  modify_date            DateTime       @updatedAt
   Wallet       Wallet? @relation(fields: [walletId], references: [id])
-  refreshToken String?
+  RefreshToken           RefreshToken[]
+}
+model RefreshToken {
+  id      Int    @id @default(autoincrement())
+  token   String @unique
+  user_id Int
+  user    User   @relation(fields: [user_id], references: [id])
 }
 
 model Wallet {

@@ -1,12 +1,51 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Eye, EyeOff, Lock, Mail, User } from 'lucide-react';
 import { signupSchema } from '@/lib/validation.ts';
 import Input from '@/components/Input';
+import { ActionFunctionArgs } from "react-router-dom";
+import { submit as submitRegisterForm } from "@/lib/api/AuthService/Register";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+export async function action({ request }: ActionFunctionArgs) {
+    const formData = await request.formData();
+    const name = formData.get("name")?.toString();
+    const email = formData.get("email")?.toString();
+    const password = formData.get("password")?.toString();
+
+    if (!email || !password || !name ) {
+        return { error: "All fields are required." };
+    }
+
+    const result = await submitRegisterForm({ name, email, password });
+
+    if (result.ok) {
+        const response = await result.json();
+        if (response.message === "User and Wallet Created") {
+            toast.success('Registration successful');
+            return { error: "Registration successful." };
+        }
+    } else {
+        toast.error('Registration failed');
+        return { error: "Registration failed." };
+    }
+}
 
 export default function RegisterForm() {
     const [showPassword, setShowPassword] = useState(false);
     const [errors, setErrors] = useState<Record<string, string>>({});
+
+    const navigate = useNavigate();
+    useEffect(() => {
+        const localToken = localStorage.getItem('token');
+
+        if (localToken) {
+            navigate("/dashboard/user");
+        }
+    }, [navigate]);
+
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -14,12 +53,23 @@ export default function RegisterForm() {
         confirmPassword: '',
     });
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+
         setErrors({});
         try {
             signupSchema.parse(formData);
-            console.log('Form submitted:', formData);
+            const result = await submitRegisterForm(formData);
+            if (result.ok) {
+                const response = await result.json();
+                if (response.message === "User and Wallet Created") {
+                    toast.success('Registration successful');
+                    navigate("/login");
+                }
+            }
+            else {
+                toast.error('Registration failed');
+            }
         } catch (error: any) {
             const formErrors: Record<string, string> = {};
             error.errors.forEach((err: any) => {

@@ -5,6 +5,7 @@ import { zValidator } from '@hono/zod-validator'
 import { loginSchema } from '../../Schemas/AuthSchema'
 import { generateAccessToken, generateRefreshToken } from '../../Utils/jwt'
 import { serialize } from 'cookie';
+import { getConnInfo } from "@hono/node-server/conninfo";
 
 
 const loginApp = new Hono()
@@ -24,9 +25,16 @@ const loginApp = new Hono()
             }
 
             const accessToken = generateAccessToken(user.id);
-            const refreshToken = generateRefreshToken(user.id);
+            const tokenRefresh = generateRefreshToken(user.id);
 
-            const cookie = serialize("refresh_token", refreshToken, {
+            await prisma.refreshToken.create({
+                data: {
+                  token: tokenRefresh,
+                  user_id: user.id,
+                },
+              });
+        
+            const cookie = serialize("refresh_token", tokenRefresh, {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === "production",
                 maxAge: 7 * 24 * 60 * 60,
@@ -34,7 +42,17 @@ const loginApp = new Hono()
             });
 
             c.header("Set-Cookie", cookie);
-            return c.json({ message: "Login successful", token: accessToken, refreshToken }, 200);
+            
+      const { password: _, ...userWithoutPassword } = user;
+
+      const info = getConnInfo(c);
+
+      await prisma.user.update({
+        where: { email },
+        data: { last_login: new Date(), last_ip: info.remote.address },
+      });
+
+            return c.json({ message: "Login successful", token: accessToken, refreshToken:tokenRefresh, user: userWithoutPassword }, 200);
         } catch (error) {
             console.error(error);
             return c.json({ message: "Error during login" }, 500);

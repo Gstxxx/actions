@@ -1,4 +1,3 @@
-import React from 'react';
 import { TechCard } from './TechCard';
 
 export function TechStack() {

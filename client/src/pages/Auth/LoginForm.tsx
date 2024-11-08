@@ -22,11 +22,9 @@ export async function action({ request }: ActionFunctionArgs) {
 
     if (result.ok) {
         const response = await result.json();
-        if ('token' in response && 'tokenRefresh' in response) {
-            localStorage.setItem("token", response.token);
-            localStorage.setItem("refreshToken", response.refreshToken);
+        if (response.message === "Login successful") {
             toast.success('Login successful');
-            return { success: true, redirectTo: "/dashboard/user" };
+            return { error: "Login successful." };
         }
     } else {
         toast.error('Invalid email or password');
@@ -63,7 +61,7 @@ export default function LoginForm() {
             const result = await submitLoginForm(formData);
             if (result.ok) {
                 const response = await result.json();
-                if ('token' in response && 'tokenRefresh' in response) {
+                if (response.message === "Login successful") {
                     localStorage.setItem("token", response.token);
                     localStorage.setItem("refreshToken", response.refreshToken);
                     toast.success('Login successful');

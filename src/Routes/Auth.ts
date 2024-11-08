@@ -4,9 +4,9 @@ import { loginApp } from '../Controllers/Auth/Login';
 import { refreshTokenApp } from "../Controllers/Auth/Refresh";
 
 const authApp = new Hono()
-    .basePath("/auth")
-    .route("/signup", registerApp)
-    .route("/login", loginApp)
-    .route("/refresh-token", refreshTokenApp);
+    .basePath("/")
+    .route("/", registerApp)
+    .route("/", loginApp)
+    .route("/", refreshTokenApp);
 
 export { authApp };

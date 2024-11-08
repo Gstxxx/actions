@@ -29,7 +29,7 @@ const registerApp = new Hono()
         }
         catch (error) {
             console.error(error);
-            return c.json({ message: "Error while creating user and wallet" }, 500);
+            return c.json({ message: "Error while creating user and wallet" ,error}, 500);
         }
     });
 
