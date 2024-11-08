@@ -1,12 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 import { submit as createQuote } from '@/lib/api/QuoteService/Create';
 import { submit as listQuotes } from '@/lib/api/QuoteService/List';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Quote } from '@/../../src/Types/Quote';
-import { Loader2Icon, MoonIcon, SunIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useTheme } from "@/components/theme-provider";
+import { Loader2Icon } from "lucide-react";
 import { ThemeProvider } from "@/components/theme-provider";
 import { StockCard } from "@/components/StockCard";
 import { StockDetailsDialog } from "@/components/StockDetailsDialog";
@@ -59,25 +57,15 @@ export default function QuotesPages() {
     return () => clearInterval(interval);
   }, []);
 
-  const handleAddQuote = async () => {
-    if (!newQuote) {
+  const handleAddQuote = async (ticker: string) => {
+    if (!ticker) {
       toast.error('Quote cannot be empty');
       return;
     }
     try {
-      const response = await createQuote({ ticker: newQuote });
+      const response = await createQuote({ ticker });
       if (response.ok) {
-        const { quote: addedQuote }: { quote: { regularMarketTime: string | null } & Omit<Quote, 'regularMarketTime' | 'regularMarketDayHigh' | 'regularMarketDayLow' | 'regularMarketVolume' | 'regularMarketPreviousClose' | 'regularMarketOpen' | 'fiftyTwoWeekLow' | 'fiftyTwoWeekHigh' | 'priceEarnings' | 'earningsPerShare'> & {
-          regularMarketDayHigh: number | null;
-          regularMarketDayLow: number | null;
-          regularMarketVolume: number | null;
-          regularMarketPreviousClose: number | null;
-          regularMarketOpen: number | null;
-          fiftyTwoWeekLow: number | null;
-          fiftyTwoWeekHigh: number | null;
-          priceEarnings: number | null;
-          earningsPerShare: number | null;
-        }} = await response.json();
+        const { quote: addedQuote } = await response.json();
         const transformedQuote = {
           ...addedQuote,
           regularMarketTime: addedQuote.regularMarketTime ? new Date(addedQuote.regularMarketTime) : undefined,
@@ -92,7 +80,6 @@ export default function QuotesPages() {
           earningsPerShare: addedQuote.earningsPerShare ?? undefined,
         };
         setQuotes([...quotes, transformedQuote]);
-        setNewQuote('');
         toast.success('Quote added successfully');
       } else {
         toast.error('Failed to add quote');

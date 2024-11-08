@@ -2,7 +2,7 @@ import { prisma } from '../../Utils/prisma'
 import { Hono } from "hono";
 import { zValidator } from '@hono/zod-validator'
 import { requestQuoteSchema } from '../../Schemas/QuotesSchema'
-import { userMiddleware } from '../../Middlewares/AuthMiddleware';
+import {  userMiddleware } from '../../Middlewares/AuthMiddleware';
 
 const controller = new Hono()
     .basePath("/quote")

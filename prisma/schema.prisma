@@ -26,6 +26,7 @@ model RefreshToken {
   id      Int    @id @default(autoincrement())
   token   String @unique
   user_id Int
+  created_at DateTime @default(now())
   user    User   @relation(fields: [user_id], references: [id])
 }
 
