@@ -46,11 +46,9 @@ export const userMiddleware = createMiddleware<{
       }
       c.set("user", user);
       await next();
-    } catch (err) {
-      console.log("Error: %s", err)
+    } catch {
       const token = getAuthToken(c);
-      console.log("Token: %s", token.token)
-      return c.json({ error: "Invalid or expired token" }, 401);
+      return c.json({ error: "Invalid or expired token", token: token.token }, 401);
     }
   });
 

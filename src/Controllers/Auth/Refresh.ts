@@ -2,9 +2,6 @@ import { Hono } from "hono";
 import { sign, verify } from "hono/jwt";
 import { prisma } from "../../Utils/prisma";
 
-const JWT_SECRET = "u7DbW4Z%&dk4F*TrD9zYbTpq39$P2P^5MnL#tA7yVs$8Bf!ZqX"
-const JWT_REFRESH_SECRET = "t4Gp#LxK8qMvH$Wp6X%t&Jx8F*RbNz5^PaB&3AqS9PqR7Xw!Vy"
-
 const refreshTokenApp = new Hono()
     .basePath("/auth")
     .post("/refresh-token", async (c) => {
@@ -17,19 +14,17 @@ const refreshTokenApp = new Hono()
             }
 
             const refreshToken = authHeader.replace("Bearer ", "");
-            console.log("Received Refresh Token:", refreshToken);
 
             if (!refreshToken) {
                 return c.json({ error: "Refresh token is required" }, 401);
             }
 
-            if (!JWT_REFRESH_SECRET) {
-                return c.json({ error: "Missing JWT_REFRESH_SECRET environment variable" }, 500);
+            if (!process.env.JWT_REFRESH_SECRET) {
+                return c.json({ error: "Missing process.env.JWT_REFRESH_SECRET environment variable" }, 500);
             }
             let payload;
             try {
-                payload = await verify(refreshToken, JWT_REFRESH_SECRET);
-                console.log("Token payload:", payload);
+                payload = await verify(refreshToken, process.env.JWT_REFRESH_SECRET);
             } catch (err) {
                 console.error("Token verification error:", err);
                 if (err.name === 'JwtTokenSignatureMismatched') {
@@ -46,7 +41,6 @@ const refreshTokenApp = new Hono()
                 include: { user: true }
             });
 
-            console.log("Stored Refresh Token:", storedRefreshToken);
 
             if (!storedRefreshToken) {
                 return c.json({ error: "Invalid refresh token" }, 401);
@@ -62,11 +56,11 @@ const refreshTokenApp = new Hono()
                 exp: Math.floor(Date.now() / 1000) + 60,
             };
 
-            if (!JWT_SECRET) {
-                return c.json({ error: "Missing JWT_SECRET environment variable" }, 500);
+            if (!process.env.JWT_SECRET) {
+                return c.json({ error: "Missing process.env.JWT_SECRET environment variable" }, 500);
             }
 
-            const newAccessToken = await sign(newPayload, JWT_SECRET);
+            const newAccessToken = await sign(newPayload, process.env.JWT_SECRET);
 
             const newRefreshPayload = {
                 sub: storedRefreshToken.user_id,
@@ -74,7 +68,7 @@ const refreshTokenApp = new Hono()
                 exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7,
             };
 
-            const newRefreshToken = await sign(newRefreshPayload, JWT_REFRESH_SECRET);
+            const newRefreshToken = await sign(newRefreshPayload, process.env.JWT_REFRESH_SECRET);
 
             await prisma.refreshToken.update({
                 where: { id: storedRefreshToken.id },

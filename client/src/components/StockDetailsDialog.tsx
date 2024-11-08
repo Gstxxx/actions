@@ -29,7 +29,7 @@ export function StockDetailsDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="bg-white rounded-lg shadow-lg sm:max-w-[600px]">
         <DialogHeader>
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between pr-4">
             <DialogTitle className="text-2xl font-bold">{quote.longName}</DialogTitle>
             <Button
               variant="destructive"

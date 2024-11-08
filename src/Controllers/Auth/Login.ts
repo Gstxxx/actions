@@ -7,8 +7,6 @@ import { getConnInfo } from "@hono/node-server/conninfo";
 import { sign } from "hono/jwt";
 
 
-const JWT_SECRET = "u7DbW4Z%&dk4F*TrD9zYbTpq39$P2P^5MnL#tA7yVs$8Bf!ZqX"
-const JWT_REFRESH_SECRET = "t4Gp#LxK8qMvH$Wp6X%t&Jx8F*RbNz5^PaB&3AqS9PqR7Xw!Vy"
 
 const loginApp = new Hono()
     .basePath("/auth")
@@ -26,7 +24,6 @@ const loginApp = new Hono()
                 return c.json({ message: "Invalid email or password" }, 401);
             }
 
-            // Delete any existing refresh tokens for this user
             await prisma.refreshToken.deleteMany({
                 where: { user_id: user.id }
             });
@@ -34,28 +31,28 @@ const loginApp = new Hono()
             const payload = {
                 sub: user.id,
                 role: user.type,
-                exp: Math.floor(Date.now() / 1000) + 60,
+                exp: Math.floor(Date.now() / 1000) + (60 * 60),
               };
-              if (!JWT_SECRET) {
+              if (!process.env.JWT_SECRET) {
                 return c.json(
-                  { error: "Missing JWT_SECRET environment variable" },
+                  { error: "Missing process.env.JWT_SECRET environment variable" },
                   500,
                 );
               }
-              const token = await sign(payload, JWT_SECRET);
+              const token = await sign(payload, process.env.JWT_SECRET);
         
               const payloadRefresh = {
                 sub: user.id,
                 role: user.type,
-                exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7,
+                exp: Math.floor(Date.now() / 1000) + (60 * 60 * 24 * 30),
               };
-              if (!JWT_REFRESH_SECRET) {
+              if (!process.env.JWT_REFRESH_SECRET) {
                 return c.json(
-                  { error: "Missing JWT_REFRESH_SECRET environment variable" },
+                  { error: "Missing process.env.JWT_REFRESH_SECRET environment variable" },
                   500,
                 );
               }
-              const tokenRefresh = await sign(payloadRefresh, JWT_REFRESH_SECRET);
+              const tokenRefresh = await sign(payloadRefresh, process.env.JWT_REFRESH_SECRET);
         
               await prisma.refreshToken.create({
                 data: {

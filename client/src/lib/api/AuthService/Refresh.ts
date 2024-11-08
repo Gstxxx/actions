@@ -1,12 +1,8 @@
-import { getApiClient, getToken } from "../ApiService.";
+import { getApiClientRefresh } from "../ApiService.";
 
-const action = getApiClient().auth["refresh-token"].$post;
+const action = getApiClientRefresh().auth["refresh-token"].$post;
 
 
 export async function submit() {
-    return await action({
-        headers: {
-            "x-refresh-token": getToken()
-        }
-    });
+    return await action();
 }

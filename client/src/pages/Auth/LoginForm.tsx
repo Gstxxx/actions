@@ -41,7 +41,7 @@ export default function LoginForm() {
         const localToken = localStorage.getItem('token');
 
         if (localToken) {
-            navigate("/dashboard/user");
+            navigate("/dashboard");
         }
     }, [navigate]);
     const [formData, setFormData] = useState({
@@ -65,7 +65,7 @@ export default function LoginForm() {
                     localStorage.setItem("token", response.token);
                     localStorage.setItem("refreshToken", response.refreshToken);
                     toast.success('Login successful');
-                    navigate("/dashboard/user");
+                    navigate("/dashboard");
                 }
             }
             else {

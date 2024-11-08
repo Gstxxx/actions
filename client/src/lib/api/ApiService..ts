@@ -9,8 +9,26 @@ export function getToken() {
     return token;
 }
 
+
+export function getTokenRefresh() {
+    const token = localStorage.getItem('refreshToken')?.toString();
+    if (!token) {
+        return { error: "Not logged in" };
+    }
+    return token;
+}
+
 export function getApiClient() {
     const token = getToken();
+    return hc<AppType>("http://localhost:3005", {
+        headers: token && typeof token === 'string' ? {
+            Authorization: `Bearer ${token}`,
+        } : {},
+    }) as ReturnType<typeof hc<AppType>>;
+}
+
+export function getApiClientRefresh() {
+    const token = getTokenRefresh();
     return hc<AppType>("http://localhost:3005", {
         headers: token && typeof token === 'string' ? {
             Authorization: `Bearer ${token}`,

@@ -1,5 +1,11 @@
-export default function Layout() {
+import { Outlet } from "react-router-dom";
+
+export function LayoutDash() {
   return (
-    <div>Layout</div>
+    <div >
+      <main>
+        <Outlet />
+      </main>
+    </div>
   )
 }
