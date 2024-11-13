@@ -80,8 +80,14 @@ export default function QuotesPages() {
           earningsPerShare: addedQuote.earningsPerShare ?? undefined,
           amount: addedQuote.quoteAmount ?? amount,
         };
-        setQuotes([...quotes, transformedQuote]);
-        toast.success('Quote added successfully');
+
+        const exists = quotes.some(quote => quote.id === transformedQuote.id);
+        if (!exists) {
+          setQuotes([...quotes, transformedQuote]);
+          toast.success('Quote added successfully');
+        } else {
+          toast.info('Quote already exists in your portfolio');
+        }
       } else {
         toast.error('Failed to add quote');
       }
@@ -114,7 +120,7 @@ export default function QuotesPages() {
                 }).format(totalPortfolioValue)}
               </p>
             </div>
-            <div className="flex items-center gap-4">
+            <div className="pl-4 flex items-center gap-4">
               <AddQuoteDialog onAdd={handleAddQuote} />
             </div>
           </div>
