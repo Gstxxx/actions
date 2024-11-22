@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { ArrowDownIcon, ArrowUpIcon, TrendingUpIcon } from "lucide-react";
 import { cn, formatCurrency, formatNumber } from "@/lib/utils";
-import { Quote } from "@/../../src/Types/Quote";
+import { Quote } from "@/../../server/src/Types/Quote";
 import Image from "@/components/ui/image";
 import { Button } from "@/components/ui/button";
 
@@ -12,7 +12,7 @@ interface StockCardProps {
 
 export function StockCard({ quote, onClick }: StockCardProps) {
   const isPositive = (quote.regularMarketChangePercent || 0) >= 0;
-  const totalInvestment = quote.amount ? (quote.price * quote.amount) : undefined;
+  const totalInvestment = quote.quoteAmount ? (quote.price * quote.quoteAmount) : undefined;
 
   return (
     <Button
@@ -62,11 +62,11 @@ export function StockCard({ quote, onClick }: StockCardProps) {
               <p className="text-sm font-medium text-muted-foreground">Volume</p>
               <p className="text-sm">{formatNumber(quote.regularMarketVolume || 0)}</p>
             </div>
-            {quote.amount && (
+            {quote.quoteAmount && (
               <div className="space-y-1 col-span-2">
                 <p className="text-sm font-medium text-muted-foreground">Investment</p>
                 <p className="text-sm font-semibold">
-                  {formatCurrency(totalInvestment || 0, quote.currency)} ({quote.amount} shares)
+                  {formatCurrency(totalInvestment || 0, quote.currency)} ({quote.quoteAmount} shares)
                 </p>
               </div>
             )}

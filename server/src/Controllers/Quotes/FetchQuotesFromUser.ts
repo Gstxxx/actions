@@ -14,19 +14,27 @@ const controller = new Hono()
                 include: {
                     Wallet: {
                         include: {
-                            quotes: true
+                            quotes: {
+                                include: {
+                                    priceHistory: {
+                                        orderBy: {
+                                            date: 'desc'
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }
             });
 
             if (!user?.Wallet) {
-                return c.json({ message: "User wallet not found" }, 404);
+                return c.json({ message: "User wallet not found" }, 200);
             }
 
-            return c.json({ 
-                message: "Success", 
-                quotes: user.Wallet.quotes 
+            return c.json({
+                message: "Success",
+                quotes: user.Wallet.quotes
             }, 200);
         }
         catch (error) {

@@ -2,14 +2,14 @@ import { prisma } from '../../Utils/prisma'
 import { Hono } from "hono";
 import { zValidator } from '@hono/zod-validator'
 import { requestQuoteSchema } from '../../Schemas/QuotesSchema'
-import {  userMiddleware } from '../../Middlewares/AuthMiddleware';
+import { userMiddleware } from '../../Middlewares/AuthMiddleware';
 
 const controller = new Hono()
     .basePath("/quote")
     .use(userMiddleware)
     .post("/create", zValidator("json", requestQuoteSchema), async (c) => {
         try {
-            const { ticker,amount } = c.req.valid("json");
+            const { ticker, amount } = c.req.valid("json");
 
             const token = process.env.BR_API_TOKEN;
             const apiUrl = process.env.API_URL;
@@ -73,7 +73,29 @@ const controller = new Hono()
                         fiftyTwoWeekLow: quoteData.fiftyTwoWeekLow,
                         fiftyTwoWeekHigh: quoteData.fiftyTwoWeekHigh,
                         priceEarnings: quoteData.priceEarnings,
-                        earningsPerShare: quoteData.earningsPerShare
+                        earningsPerShare: quoteData.earningsPerShare,
+                        priceHistory: {
+                            create: {
+                                price: quoteData.regularMarketPrice,
+                                amount: amount,
+                            }
+                        }
+                    }
+                });
+            } else {
+                await prisma.quoteHistory.create({
+                    data: {
+                        price: quoteData.regularMarketPrice,
+                        amount: amount,
+                        quoteId: quote.id
+                    }
+                });
+
+                quote = await prisma.quote.update({
+                    where: { id: quote.id },
+                    data: {
+                        price: quoteData.regularMarketPrice,
+                        quoteAmount: amount
                     }
                 });
             }

@@ -60,4 +60,14 @@ model Quote {
   earningsPerShare           Float?
   wallet                      Wallet?  @relation(fields: [walletId], references: [id])
   walletId                    Int?
+  priceHistory                 QuoteHistory[]
+}
+
+model QuoteHistory {
+  id          Int      @id @default(autoincrement())
+  price       Float
+  amount      Int
+  date        DateTime @default(now())
+  quote       Quote    @relation(fields: [quoteId], references: [id])
+  quoteId     Int
 }

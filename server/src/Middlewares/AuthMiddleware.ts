@@ -7,7 +7,7 @@ import { verify, sign } from "hono/jwt";
 function getAuthToken(c: Context) {
   const authHeader = c.req.header("Authorization");
   if (!authHeader) {
-    return { error: "Authorization header missing", status: 401 };
+    return { error: "Authorization header missing 2", status: 401 };
   }
 
   const token = authHeader.replace("Bearer ", "");
@@ -19,38 +19,38 @@ function getAuthToken(c: Context) {
 }
 
 export const userMiddleware = createMiddleware<{
-    Variables: {
-      user: User;
-    };
-  }>(async (c, next) => {
-    const token = getAuthToken(c);
-    if (!token.token) {
-      return c.json({ error: "Authorization header missing" }, 401);
-    }
-    try {
-    if(!process.env.JWT_SECRET){
+  Variables: {
+    user: User;
+  };
+}>(async (c, next) => {
+  const token = getAuthToken(c);
+  if (!token.token) {
+    return c.json({ error: "Authorization header missing 1" }, 401);
+  }
+  try {
+    if (!process.env.JWT_SECRET) {
       return c.json({ error: "Missing JWT_SECRET environment variable" }, 500);
     }
-      const payload = await verify(token.token, process.env.JWT_SECRET);
-      if (!payload.sub) {
-        return c.json({ error: "Payload invalid" }, 404);
-      }
-      const userID = payload.sub as number;
-  
-      const user = await prisma.user.findUnique({ where: { id: userID } });
-      if (!user) {
-        return c.json({ error: "User not found" }, 404);
-      }
-      if (user.deleted_at !== null) {
-        return c.json({ error: "User has been deleted" }, 404);
-      }
-      c.set("user", user);
-      await next();
-    } catch {
-      const token = getAuthToken(c);
-      return c.json({ error: "Invalid or expired token", token: token.token }, 401);
+    const payload = await verify(token.token, process.env.JWT_SECRET);
+    if (!payload.sub) {
+      return c.json({ error: "Payload invalid" }, 404);
     }
-  });
+    const userID = payload.sub as number;
+
+    const user = await prisma.user.findUnique({ where: { id: userID } });
+    if (!user) {
+      return c.json({ error: "User not found" }, 404);
+    }
+    if (user.deleted_at !== null) {
+      return c.json({ error: "User has been deleted" }, 404);
+    }
+    c.set("user", user);
+    await next();
+  } catch {
+    const token = getAuthToken(c);
+    return c.json({ error: "Invalid or expired token", token: token.token }, 401);
+  }
+});
 
 export const adminMiddleware = createMiddleware<{
   Variables: {

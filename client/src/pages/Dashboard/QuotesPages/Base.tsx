@@ -25,9 +25,9 @@ export default function QuotesPages() {
             const transformedQuotes = data.quotes.map((quote: Quote) => ({
               ...quote,
               regularMarketTime: quote.regularMarketTime ? new Date(quote.regularMarketTime) : undefined,
-              regularMarketDayHigh: quote.regularMarketDayHigh ?? undefined,
-              regularMarketDayLow: quote.regularMarketDayLow ?? undefined,
-              regularMarketVolume: quote.regularMarketVolume ?? undefined,
+              regularMarketDayHigh: quote.regularMarketDayHigh || quote.price,
+              regularMarketDayLow: quote.regularMarketDayLow || quote.price,
+              regularMarketVolume: quote.regularMarketVolume || undefined,
               regularMarketPreviousClose: quote.regularMarketPreviousClose ?? undefined,
               regularMarketOpen: quote.regularMarketOpen ?? undefined,
               fiftyTwoWeekLow: quote.fiftyTwoWeekLow ?? undefined,
@@ -35,11 +35,19 @@ export default function QuotesPages() {
               priceEarnings: quote.priceEarnings ?? undefined,
               earningsPerShare: quote.earningsPerShare ?? undefined,
               walletId: quote.walletId ?? undefined,
-              amount: quote.amount,
+              amount: quote.quoteAmount,
+              priceHistory: quote.priceHistory ? quote.priceHistory.map(history => ({
+                ...history,
+                date: new Date(history.date)
+              })) : undefined,
             }));
             setQuotes(transformedQuotes);
             setLoading(false);
-          } else {
+          }
+          else if (data.message === "User wallet not found") {
+            setLoading(false);
+          }
+          else {
             toast.error('Unexpected response format');
             setLoading(false);
           }
@@ -69,16 +77,20 @@ export default function QuotesPages() {
         const transformedQuote = {
           ...addedQuote,
           regularMarketTime: addedQuote.regularMarketTime ? new Date(addedQuote.regularMarketTime) : undefined,
-          regularMarketDayHigh: addedQuote.regularMarketDayHigh ?? undefined,
-          regularMarketDayLow: addedQuote.regularMarketDayLow ?? undefined,
-          regularMarketVolume: addedQuote.regularMarketVolume ?? undefined,
+          regularMarketDayHigh: addedQuote.regularMarketDayHigh || addedQuote.price,
+          regularMarketDayLow: addedQuote.regularMarketDayLow || addedQuote.price,
+          regularMarketVolume: addedQuote.regularMarketVolume || undefined,
           regularMarketPreviousClose: addedQuote.regularMarketPreviousClose ?? undefined,
           regularMarketOpen: addedQuote.regularMarketOpen ?? undefined,
           fiftyTwoWeekLow: addedQuote.fiftyTwoWeekLow ?? undefined,
           fiftyTwoWeekHigh: addedQuote.fiftyTwoWeekHigh ?? undefined,
           priceEarnings: addedQuote.priceEarnings ?? undefined,
           earningsPerShare: addedQuote.earningsPerShare ?? undefined,
-          amount: addedQuote.quoteAmount ?? amount,
+          amount: addedQuote.quoteAmount,
+          priceHistory: addedQuote.priceHistory ? addedQuote.priceHistory.map((history: { date: string | number | Date }) => ({
+            ...history,
+            date: new Date(history.date)
+          })) : undefined,
         };
 
         const exists = quotes.some(quote => quote.id === transformedQuote.id);
@@ -103,7 +115,7 @@ export default function QuotesPages() {
   };
 
   const totalPortfolioValue = quotes.reduce((total, quote) => {
-    return total + (quote.price * quote.amount);
+    return total + (quote.price * quote.quoteAmount);
   }, 0);
 
   return (

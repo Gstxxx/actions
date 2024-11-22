@@ -9,7 +9,12 @@ export async function seed() {
             name: 'dev',
             email: 'dev@gmail.com',
             password: hashedPassword,
-            Wallet: {}
+            Wallet: {
+                create: {
+                    userId: 1,
+
+                }
+            }
         }
     });
     console.log('Seeding complete');
