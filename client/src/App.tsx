@@ -1,6 +1,5 @@
 import { Hero } from './components/Hero.tsx';
 import { TechStack } from './components/TechStack.tsx';
-import { Navbar } from './components/Navbar.tsx';
 import { Footer } from './components/Footer.tsx';
 import { createBrowserRouter, Outlet, RouterProvider, useNavigate } from "react-router-dom";
 import LoginForm from './pages/Auth/LoginForm';
@@ -15,12 +14,7 @@ function BaseLayout() {
     return (
         <>
             <div className="min-h-screen bg-gradient-to-br from-indigo-950 via-purple-800 to-violet-950">
-                <div className="container mx-auto px-4 py-8">
-                    {!window.location.pathname.startsWith('/dashboard') && <Navbar />}
-                    <div className="container mx-auto px-4 py-16 flex justify-center">
-                        <Outlet />
-                    </div>
-                </div>
+                <Outlet />
             </div>
         </>
     );
@@ -56,11 +50,11 @@ const BaseLayoutDash = () => {
                 const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
                 const payload = JSON.parse(window.atob(base64));
                 const expirationTime = payload.exp * 1000;
-                
+
                 if (Date.now() >= expirationTime) {
                     const response = await submit();
                     const data = await response.json();
-                    if("token" in data && "refreshToken" in data) {
+                    if ("token" in data && "refreshToken" in data) {
                         localStorage.setItem("token", data.token);
                         localStorage.setItem("refreshToken", data.refreshToken);
                         window.location.reload();
@@ -111,7 +105,7 @@ const router = createBrowserRouter([
                 ],
             },
         ],
-        
+
     },
 ]);
 

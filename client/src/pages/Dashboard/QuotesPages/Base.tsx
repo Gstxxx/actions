@@ -1,9 +1,9 @@
-import  { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { submit as createQuote } from '@/lib/api/QuoteService/Create';
 import { submit as listQuotes } from '@/lib/api/QuoteService/List';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Quote } from '@/../../src/Types/Quote';
+import { Quote } from '@/../../server/src/Types/Quote'
 import { Loader2Icon } from "lucide-react";
 import { ThemeProvider } from "@/components/theme-provider";
 import { StockCard } from "@/components/StockCard";
@@ -22,7 +22,7 @@ export default function QuotesPages() {
         if (response.ok) {
           const data = await response.json();
           if (Array.isArray(data.quotes)) {
-            const transformedQuotes = data.quotes.map(quote => ({
+            const transformedQuotes = data.quotes.map((quote: Quote) => ({
               ...quote,
               regularMarketTime: quote.regularMarketTime ? new Date(quote.regularMarketTime) : undefined,
               regularMarketDayHigh: quote.regularMarketDayHigh ?? undefined,
@@ -35,7 +35,7 @@ export default function QuotesPages() {
               priceEarnings: quote.priceEarnings ?? undefined,
               earningsPerShare: quote.earningsPerShare ?? undefined,
               walletId: quote.walletId ?? undefined,
-              amount: quote.quoteAmount,
+              amount: quote.amount,
             }));
             setQuotes(transformedQuotes);
             setLoading(false);
@@ -47,7 +47,7 @@ export default function QuotesPages() {
           toast.error('Failed to fetch quotes');
           setLoading(false);
         }
-      } catch (error) {
+      } catch {
         toast.error('An error occurred while fetching quotes');
         setLoading(false);
       }
@@ -91,7 +91,7 @@ export default function QuotesPages() {
       } else {
         toast.error('Failed to add quote');
       }
-    } catch (error) {
+    } catch {
       toast.error('An error occurred while adding the quote');
     }
   };
