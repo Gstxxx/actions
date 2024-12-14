@@ -16,9 +16,7 @@
     "@prisma/extension-pulse": "1.2.0",
     "cookie": "^1.0.1",
     "dotenv": "16.4.5",
-    "hono": "4.6.9",
-    "jsonwebtoken": "9.0.2",
-    "zod": "3.23.8"
+    "jsonwebtoken": "9.0.2"
   },
   "devDependencies": {
     "@types/bcrypt": "5.0.2",

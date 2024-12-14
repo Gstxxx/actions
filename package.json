@@ -1,0 +1,13 @@
+{
+    "name": "actions",
+    "private": true,
+    "scripts": {
+        "bootstrap": "pnpm install",
+        "dev": "pnpm -r run dev",
+        "build": "pnpm -r run build"
+    },
+    "dependencies": {
+        "hono": "4.6.11",
+        "zod": "3.22.4"
+    }
+}

@@ -2,12 +2,12 @@ import { Hero } from './components/Hero.tsx';
 import { TechStack } from './components/TechStack.tsx';
 import { Footer } from './components/Footer.tsx';
 import { createBrowserRouter, Outlet, RouterProvider, useNavigate } from "react-router-dom";
-import LoginForm from './pages/Auth/LoginForm';
-import RegisterForm from './pages/Auth/RegisterForm';
+import LoginForm from './pages/Auth/LoginForm.tsx';
+import RegisterForm from './pages/Auth/RegisterForm.tsx';
 import QuotesPages from './pages/Dashboard/QuotesPages/Base.tsx';
 import { useEffect } from "react";
-import { LayoutDash } from "./pages/Dashboard/Layout";
-import { submit } from './lib/api/AuthService/Refresh';
+import { LayoutDash } from "./pages/Dashboard/Layout.tsx";
+import { submit } from './lib/api/AuthService/Refresh.ts';
 
 
 function BaseLayout() {
